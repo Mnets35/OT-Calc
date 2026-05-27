@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OT Compensation & Growth Model</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f4f6f8; --surface: #ffffff; --border: rgba(0,0,0,0.08);
+    --text: #1e293b; --text-light: #64748b; --accent: #16a34a;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); padding: 2rem 1rem; line-height: 1.5; }
+  .container { max-width: 700px; margin: 0 auto; }
+  header { text-align: center; margin-bottom: 2rem; background: #0f172a; color: white; padding: 2rem; border-radius: 12px; }
+  header h1 { font-size: 1.75rem; font-weight: 600; margin-bottom: 0.5rem; }
+  header p { color: #94a3b8; font-size: 0.95rem; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
+  .section-title { font-size: 0.85rem; font-family: 'DM Mono', monospace; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-light); margin-bottom: 1rem; }
+  label { display: block; font-size: 0.9rem; font-weight: 500; margin-bottom: 0.5rem; }
+  select, input[type=range] { width: 100%; padding: 0.6rem; border-radius: 6px; border: 1px solid #cbd5e1; font-family: inherit; font-size: 0.95rem; outline: none; }
+  .slider-container { display: flex; align-items: center; gap: 1rem; margin-top: 0.5rem; }
+  input[type=range] { -webkit-appearance: none; height: 4px; background: #e2e8f0; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--accent); cursor: pointer; }
+  .slider-val { font-family: 'DM Mono', monospace; font-weight: 600; min-width: 120px; text-align: right; font-size: 1.1rem; }
+  
+  .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 1rem; background: #f8fafc; padding: 1rem; border-radius: 8px; }
+  .stat-box .label { font-size: 0.75rem; font-family: 'DM Mono', monospace; color: var(--text-light); text-transform: uppercase; }
+  .stat-box .val { font-size: 1.1rem; font-weight: 600; color: var(--text); }
+  
+  .payout-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 2rem; }
+  .total-card { background: #0f172a; color: white; text-align: center; padding: 1.5rem; border-radius: 12px; }
+  .total-card .label { font-size: 0.8rem; font-family: 'DM Mono', monospace; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.05em; }
+  .total-card .grand-total { font-size: 2.2rem; font-weight: 700; color: #f8fafc; margin: 0.25rem 0; }
+  .total-card .subtext { font-size: 0.8rem; color: #4ade80; font-family: 'DM Mono', monospace; }
+  
+  .fine-print { margin-top: 2rem; padding: 1rem; border-top: 1px solid #e2e8f0; font-size: 0.85rem; color: var(--text-light); }
+  
+  @media (max-width: 550px) {
+    .payout-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>OT Compensation & Growth Model</h1>
+    <p>Secure Base Payout + Uncapped Production Multipliers</p>
+  </header>
+
+  <div class="card">
+    <div class="section-title">Step 1: Select Tenure</div>
+    <label for="year">Years of Employment</label>
+    <select id="year" onchange="calculate()">
+      <option value="1">Year 1</option>
+      <option value="2">Year 2</option>
+      <option value="3">Year 3 (Max Matrix)</option>
+    </select>
+  </div>
+
+  <div class="card">
+    <div class="section-title">Step 2: Anticipated Weekly Performance</div>
+    <label for="performance-slider">Weekly Billable Hours</label>
+    <div class="slider-container">
+      <input type="range" id="performance-slider" min="0" max="45" value="30" oninput="calculate()">
+      <span class="slider-val" id="slider-display">30 hours</span>
+    </div>
+    
+    <div class="stats-grid">
+      <div class="stat-box"><div class="label">Guaranteed Base Salary</div><div class="val">$74,000</div></div>
+      <div class="stat-box"><div class="label">Weekly Bonus Threshold</div><div class="val">18 hours/wk</div></div>
+      <div class="stat-box"><div class="label">Your Bonus Multiplier</div><div class="val" id="bonus-rate-display">$33.00</div></div>
+      <div class="stat-box"><div class="label">Max Weekly Bonus Cap</div><div class="val">Uncapped</div></div>
+    </div>
+  </div>
+
+  <div class="payout-grid">
+    <div class="total-card">
+      <div class="label">Estimated Annual Comp</div>
+      <div class="grand-total" id="total-compensation">$0</div>
+      <div class="subtext" id="breakdown-text">Base + Bonus</div>
+    </div>
+    <div class="total-card" style="background: #1e293b;">
+      <div class="label">Estimated Monthly Comp</div>
+      <div class="grand-total" id="monthly-compensation">$0</div>
+      <div class="subtext" id="monthly-breakdown-text">Avg Payout/Mo</div>
+    </div>
+  </div>
+
+  <div class="fine-print">
+    <p><strong>Note:</strong> Your base salary remains 100% guaranteed, absorbing cancellation variables and tracking your documentation hours safely. Production bonuses are entirely uncapped—the more billable hours you complete, the more your income scales.</p>
+  </div>
+</div>
+
+<script>
+  const rates = { "1": 33.00, "2": 35.00, "3": 37.00 };
+
+  function calculate() {
+    const year = document.getElementById("year").value;
+    const volume = parseFloat(document.getElementById("performance-slider").value);
+    const rate = rates[year];
+    
+    document.getElementById("slider-display").textContent = volume + " hours";
+    document.getElementById("bonus-rate-display").textContent = "$" + rate.toFixed(2) + " / hour";
+    
+    let bonusUnits = volume - 18;
+    if (bonusUnits < 0) bonusUnits = 0;
+    
+    const annualBonus = bonusUnits * rate * 48;
+    const totalAnnual = 74000 + annualBonus;
+    
+    const totalMonthly = totalAnnual / 12;
+    const baseMonthly = 74000 / 12;
+    const bonusMonthly = annualBonus / 12;
+    
+    document.getElementById("total-compensation").textContent = "$" + Math.round(totalAnnual).toLocaleString();
+    document.getElementById("breakdown-text").textContent = "Base: $74,000 | Bonus: $" + Math.round(annualBonus).toLocaleString();
+    
+    document.getElementById("monthly-compensation").textContent = "$" + Math.round(totalMonthly).toLocaleString();
+    document.getElementById("monthly-breakdown-text").textContent = "Base: $" + Math.round(baseMonthly).toLocaleString() + " | Bonus: $" + Math.round(bonusMonthly).toLocaleString();
+  }
+
+  calculate();
+</script>
+</body>
+</html>
