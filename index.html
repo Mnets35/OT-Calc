@@ -67,7 +67,7 @@
     <div class="section-title">Step 2: Anticipated Weekly Performance</div>
     <label for="performance-slider">Weekly Billable Hours</label>
     <div class="slider-container">
-      <input type="range" id="performance-slider" min="27" max="45" value="27" oninput="calculate()">
+      <input type="range" id="performance-slider" min="0" max="45" value="27" oninput="calculate()">
       <span class="slider-val" id="slider-display">27 hours</span>
     </div>
      
@@ -133,7 +133,7 @@
     document.getElementById("monthly-breakdown-text").textContent = "Base: $" + Math.round(baseMonthly).toLocaleString() + " | Bonus: $" + Math.round(bonusMonthly).toLocaleString();
   }
 
-  // Properly initializing script execution
+  // Properly initializing script execution on load
   calculate();
 </script>
 </body>
