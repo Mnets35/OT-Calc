@@ -24,23 +24,23 @@
   input[type=range] { -webkit-appearance: none; height: 4px; background: #e2e8f0; }
   input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--accent); cursor: pointer; }
   .slider-val { font-family: 'DM Mono', monospace; font-weight: 600; min-width: 120px; text-align: right; font-size: 1.1rem; }
-  
+   
   .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 1rem; background: #f8fafc; padding: 1rem; border-radius: 8px; }
   .stat-box .label { font-size: 0.75rem; font-family: 'DM Mono', monospace; color: var(--text-light); text-transform: uppercase; }
   .stat-box .val { font-size: 1.1rem; font-weight: 600; color: var(--text); }
-  
+   
   .payout-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 2rem; }
   .total-card { background: #0f172a; color: white; text-align: center; padding: 1.5rem; border-radius: 12px; }
   .total-card .label { font-size: 0.8rem; font-family: 'DM Mono', monospace; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.05em; }
   .total-card .grand-total { font-size: 2.2rem; font-weight: 700; color: #f8fafc; margin: 0.25rem 0; }
   .total-card .subtext { font-size: 0.8rem; color: #4ade80; font-family: 'DM Mono', monospace; }
-  
+   
   .benefits-box { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 1.5rem; margin-top: 1.5rem; }
   .benefits-box h2 { font-size: 1.1rem; font-weight: 600; color: #166534; margin-bottom: 0.75rem; }
   .benefits-box p { font-size: 0.9rem; color: #14532d; margin-bottom: 0.5rem; line-height: 1.6; }
-  
+   
   .fine-print { margin-top: 2rem; padding: 1rem; border-top: 1px solid #e2e8f0; font-size: 0.85rem; color: var(--text-light); }
-  
+   
   @media (max-width: 550px) {
     .payout-grid { grid-template-columns: 1fr; }
   }
@@ -67,10 +67,10 @@
     <div class="section-title">Step 2: Anticipated Weekly Performance</div>
     <label for="performance-slider">Weekly Billable Hours</label>
     <div class="slider-container">
-      <input type="range" id="performance-slider" min="0" max="45" value="27" oninput="calculate()">
+      <input type="range" id="performance-slider" min="27" max="45" value="27" oninput="calculate()">
       <span class="slider-val" id="slider-display">27 hours</span>
     </div>
-    
+     
     <div class="stats-grid">
       <div class="stat-box"><div class="label">Guaranteed Base Salary</div><div class="val">$75,000</div></div>
       <div class="stat-box"><div class="label">Weekly Bonus Threshold</div><div class="val">18 hours/wk</div></div>
@@ -98,10 +98,10 @@
 
   <div class="benefits-box">
     <h2>Additional Benefits & Clinic Perks</h2>
-    <p> - 401K and Health, Dental, and Vision Package addtional ~$5,000 benefit package.</p>
+    <p> - 401K and Health, Dental, and Vision Package additional ~$5,000 benefit package.</p>
     <p> - $200 CEU allowance per year</p>
     <p> - PTO (80 hours per year - rollover)</p>
-   <p> - ~3-5k contribution to state and federal taxes</p>
+    <p> - ~3-5k contribution to state and federal taxes</p>
   </div>
 </div>
 
@@ -112,23 +112,29 @@
     const year = document.getElementById("year").value;
     const volume = parseFloat(document.getElementById("performance-slider").value);
     const rate = rates[year];
-    
+     
     document.getElementById("slider-display").textContent = volume + " hours";
     document.getElementById("bonus-rate-display").textContent = "$" + rate.toFixed(2) + " / hour";
-    
+     
     let bonusUnits = volume - 18;
     if (bonusUnits < 0) bonusUnits = 0;
-    
+     
     const annualBonus = bonusUnits * rate * 48;
     const totalAnnual = 75000 + annualBonus;
-    
+     
     const totalMonthly = totalAnnual / 12;
     const baseMonthly = 75000 / 12;
     const bonusMonthly = annualBonus / 12;
-    
+     
     document.getElementById("total-compensation").textContent = "$" + Math.round(totalAnnual).toLocaleString();
     document.getElementById("breakdown-text").textContent = "Base: $75,000 | Bonus: $" + Math.round(annualBonus).toLocaleString();
-    
+     
     document.getElementById("monthly-compensation").textContent = "$" + Math.round(totalMonthly).toLocaleString();
     document.getElementById("monthly-breakdown-text").textContent = "Base: $" + Math.round(baseMonthly).toLocaleString() + " | Bonus: $" + Math.round(bonusMonthly).toLocaleString();
   }
+
+  // Properly initializing script execution
+  calculate();
+</script>
+</body>
+</html>
