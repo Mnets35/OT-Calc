@@ -35,6 +35,10 @@
   .total-card .grand-total { font-size: 2.2rem; font-weight: 700; color: #f8fafc; margin: 0.25rem 0; }
   .total-card .subtext { font-size: 0.8rem; color: #4ade80; font-family: 'DM Mono', monospace; }
   
+  .benefits-box { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 1.5rem; margin-top: 1.5rem; }
+  .benefits-box h2 { font-size: 1.1rem; font-weight: 600; color: #166534; margin-bottom: 0.75rem; }
+  .benefits-box p { font-size: 0.9rem; color: #14532d; margin-bottom: 0.5rem; line-height: 1.6; }
+  
   .fine-print { margin-top: 2rem; padding: 1rem; border-top: 1px solid #e2e8f0; font-size: 0.85rem; color: var(--text-light); }
   
   @media (max-width: 550px) {
@@ -45,8 +49,8 @@
 <body>
 <div class="container">
   <header>
-    <h1>OT Compensation & Growth Model</h1>
-    <p>Secure Base Payout + Uncapped Production Multipliers</p>
+    <h1>Not Your Everyday Therapy Services</h1>
+    <p>OT Compensation and Benefit Overview</p>
   </header>
 
   <div class="card">
@@ -55,7 +59,7 @@
     <select id="year" onchange="calculate()">
       <option value="1">Year 1</option>
       <option value="2">Year 2</option>
-      <option value="3">Year 3 (Max Matrix)</option>
+      <option value="3">Year 3</option>
     </select>
   </div>
 
@@ -63,14 +67,14 @@
     <div class="section-title">Step 2: Anticipated Weekly Performance</div>
     <label for="performance-slider">Weekly Billable Hours</label>
     <div class="slider-container">
-      <input type="range" id="performance-slider" min="0" max="45" value="30" oninput="calculate()">
-      <span class="slider-val" id="slider-display">30 hours</span>
+      <input type="range" id="performance-slider" min="0" max="45" value="27" oninput="calculate()">
+      <span class="slider-val" id="slider-display">27 hours</span>
     </div>
     
     <div class="stats-grid">
-      <div class="stat-box"><div class="label">Guaranteed Base Salary</div><div class="val">$74,000</div></div>
+      <div class="stat-box"><div class="label">Guaranteed Base Salary</div><div class="val">$75,000</div></div>
       <div class="stat-box"><div class="label">Weekly Bonus Threshold</div><div class="val">18 hours/wk</div></div>
-      <div class="stat-box"><div class="label">Your Bonus Multiplier</div><div class="val" id="bonus-rate-display">$33.00</div></div>
+      <div class="stat-box"><div class="label">Your Bonus Multiplier</div><div class="val" id="bonus-rate-display">$31.00</div></div>
       <div class="stat-box"><div class="label">Max Weekly Bonus Cap</div><div class="val">Uncapped</div></div>
     </div>
   </div>
@@ -88,13 +92,19 @@
     </div>
   </div>
 
+  <div class="benefits-box">
+    <h2>Additional Benefits & Clinic Perks</h2>
+    <p>Use this area to type in details about health insurance coverages, 401(k) matching benchmarks, continuing education stipends, and license renewal reimbursements.</p>
+    <p>You can add bullet points or text summaries directly within the code here to personalize it for interviews.</p>
+  </div>
+
   <div class="fine-print">
     <p><strong>Note:</strong> Your base salary remains 100% guaranteed, absorbing cancellation variables and tracking your documentation hours safely. Production bonuses are entirely uncapped—the more billable hours you complete, the more your income scales.</p>
   </div>
 </div>
 
 <script>
-  const rates = { "1": 33.00, "2": 35.00, "3": 37.00 };
+  const rates = { "1": 31.00, "2": 33.00, "3": 35.00 };
 
   function calculate() {
     const year = document.getElementById("year").value;
@@ -108,14 +118,14 @@
     if (bonusUnits < 0) bonusUnits = 0;
     
     const annualBonus = bonusUnits * rate * 48;
-    const totalAnnual = 74000 + annualBonus;
+    const totalAnnual = 75000 + annualBonus;
     
     const totalMonthly = totalAnnual / 12;
-    const baseMonthly = 74000 / 12;
+    const baseMonthly = 75000 / 12;
     const bonusMonthly = annualBonus / 12;
     
     document.getElementById("total-compensation").textContent = "$" + Math.round(totalAnnual).toLocaleString();
-    document.getElementById("breakdown-text").textContent = "Base: $74,000 | Bonus: $" + Math.round(annualBonus).toLocaleString();
+    document.getElementById("breakdown-text").textContent = "Base: $75,000 | Bonus: $" + Math.round(annualBonus).toLocaleString();
     
     document.getElementById("monthly-compensation").textContent = "$" + Math.round(totalMonthly).toLocaleString();
     document.getElementById("monthly-breakdown-text").textContent = "Base: $" + Math.round(baseMonthly).toLocaleString() + " | Bonus: $" + Math.round(bonusMonthly).toLocaleString();
